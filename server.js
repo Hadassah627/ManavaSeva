@@ -11,7 +11,27 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
-app.use(cors());
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+
+        const allowed = [
+            'http://localhost:3000',
+            'http://localhost:5000',
+            process.env.FRONTEND_URL
+        ].filter(Boolean);
+
+        const isVercelApp = /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+        if (allowed.includes(origin) || isVercelApp) return callback(null, true);
+
+        return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Avoid long query buffer timeouts when DB is reconnecting.
