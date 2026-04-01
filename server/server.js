@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -24,6 +25,14 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Avoid long query buffer timeouts when DB is reconnecting.
+app.use('/api', (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        return res.status(503).json({ message: 'Database unavailable. Please retry in a few seconds.' });
+    }
+    return next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
