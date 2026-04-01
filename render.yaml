@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: manavaseva-backend
+    runtime: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        value: mongodb+srv://hadassah_kiran:hadassah123@cluster0.z8clrr8.mongodb.net/manavaseva?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: 1d8f7a55c0a94a4fbab9d1d1d70e945e2b7a14c05cb5d07f2aafe8e5c1b26fd5
+      - key: NODE_ENV
+        value: production
